@@ -44,9 +44,14 @@
   <script>
     async function initCesium() {
       try {
-        // Inicializa o visualizador do Cesium usando terreno assíncrono (requerido nas versões novas)
+        // Configura o Token de Acesso do Cesium Ion
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIxN2E2M2QyYS0xNDA3LTRkNDEtYjE5OC1iYmFmNDJjMmRhNmMiLCJpZCI6NDMzODMwLCJzdWIiOiJhY29udHJlcmFzcTk3IiwiaXNzIjoiaHR0cHM6Ly9pb24uY2VzaXVtLmNvbSIsImF1ZCI6IkdpdEh1YiIsImlhdCI6MTc3OTI0Nzk0Mn0.eDOEO9NDqSTsXjHavLp-RzNn4PiGya_mrwijHJvwcHI';
+
+        // Inicializa o visualizador do Cesium com terreno 3D realista e satélite
         const viewer = new Cesium.Viewer('cesiumContainer', {
-          terrainProvider: await Cesium.createWorldTerrainAsync()
+          terrainProvider: await Cesium.createWorldTerrainAsync(), // Relevo 3D original
+          timeline: false, // MANTIDO DESATIVADO: Impede o bug (RangeError) que causa tela preta ao ler KML
+          animation: false // MANTIDO DESATIVADO: Oculta o relógio desnecessário
         });
 
         // Variáveis para guardar as fontes de dados
