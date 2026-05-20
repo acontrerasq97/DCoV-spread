@@ -58,7 +58,7 @@
         let sourceORF1ab, sourceS;
 
         // Carrega o arquivo ORF1ab_spread.kml
-        Cesium.KmlDataSource.load('./ORF1ab_spread.kml', {
+        Cesium.KmlDataSource.load('./render.kml', {
           camera: viewer.camera, canvas: viewer.canvas
         }).then(function(dataSource) {
           sourceORF1ab = dataSource;
