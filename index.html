@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Visualização 3D - Artigo Científico</title>
+  <!-- Carrega a biblioteca e o estilo do CesiumJS -->
+  <script src="https://cesium.com"></script>
+  <link href="https://cesium.com" rel="stylesheet">
+  <style>
+    html, body, #cesiumContainer {
+      width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <!-- Container onde o globo será renderizado -->
+  <div id="cesiumContainer"></div>
+
+  <script>
+    // Inicializa o visualizador do Cesium
+    const viewer = new Cesium.Viewer('cesiumContainer', {
+      terrainProvider: Cesium.createWorldTerrain() // Ativa o relevo 3D das montanhas
+    });
+
+    // Carrega o seu arquivo KML local
+    viewer.dataSources.add(Cesium.KmlDataSource.load('./dados.kml', {
+      camera: viewer.camera,
+      canvas: viewer.canvas
+    })).then(function(dataSource) {
+      // Faz a câmera focar automaticamente no local do seu KML
+      viewer.zoomTo(dataSource);
+    }).catch(function(error) {
+      console.error("Erro ao carregar o KML:", error);
+    });
+  </script>
+</body>
+</html>
