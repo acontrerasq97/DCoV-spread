@@ -9,29 +9,74 @@
   <style>
     html, body, #cesiumContainer {
       width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden;
+      font-family: Arial, sans-serif;
     }
+    /* Painel de Controle Flutuante */
+    #controlPanel {
+      position: absolute; top: 10px; left: 10px; z-index: 1000;
+      background: rgba(42, 42, 42, 0.85); color: white; padding: 15px;
+      border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); width: 220px;
+    }
+    #controlPanel h3 { margin-top: 0; font-size: 16px; border-bottom: 1px solid #555; padding-bottom: 5px; }
+    .layer-option { margin: 12px 0; display: flex; align-items: center; }
+    .layer-option input { margin-right: 10px; cursor: pointer; }
+    .layer-option label { cursor: pointer; font-size: 14px; }
   </style>
 </head>
 <body>
-  <!-- Container onde o globo será renderizado -->
+
+  <!-- Painel de Controle de Camadas -->
+  <div id="controlPanel">
+    <h3>Camadas do Artigo</h3>
+    <div class="layer-option">
+      <input type="checkbox" id="chkORF1ab" checked>
+      <label for="chkORF1ab">ORF1ab Spread</label>
+    </div>
+    <div class="layer-option">
+      <input type="checkbox" id="chkS" checked>
+      <label for="chkS">S Spread</label>
+    </div>
+  </div>
+
+  <!-- Container do Globo 3D -->
   <div id="cesiumContainer"></div>
 
   <script>
     // Inicializa o visualizador do Cesium
     const viewer = new Cesium.Viewer('cesiumContainer', {
-      terrainProvider: Cesium.createWorldTerrain() // Ativa o relevo 3D das montanhas
+      terrainProvider: Cesium.createWorldTerrain()
     });
 
-    // Carrega o seu arquivo KML local
-    viewer.dataSources.add(Cesium.KmlDataSource.load('./dados.kml', {
-      camera: viewer.camera,
-      canvas: viewer.canvas
-    })).then(function(dataSource) {
-      // Faz a câmera focar automaticamente no local do seu KML
-      viewer.zoomTo(dataSource);
-    }).catch(function(error) {
-      console.error("Erro ao carregar o KML:", error);
+    // Variáveis para guardar as fontes de dados
+    let sourceORF1ab, sourceS;
+
+    // Carrega o arquivo ORF1ab_spread.kml
+    Cesium.KmlDataSource.load('./ORF1ab_spread.kml', {
+      camera: viewer.camera, canvas: viewer.canvas
+    }).then(function(dataSource) {
+      sourceORF1ab = dataSource;
+      viewer.dataSources.add(sourceORF1ab);
+      // Foca a câmera no primeiro conjunto de dados carregado
+      viewer.zoomTo(sourceORF1ab);
+    }).catch(error => console.error("Erro no KML ORF1ab:", error));
+
+    // Carrega o arquivo S_spread.kml
+    Cesium.KmlDataSource.load('./S_spread.kml', {
+      camera: viewer.camera, canvas: viewer.canvas
+    }).then(function(dataSource) {
+      sourceS = dataSource;
+      viewer.dataSources.add(sourceS);
+    }).catch(error => console.error("Erro no KML S:", error));
+
+    // Controle de visibilidade via Checkbox (Interface)
+    document.getElementById('chkORF1ab').addEventListener('change', function(e) {
+      if (sourceORF1ab) sourceORF1ab.show = e.target.checked;
+    });
+
+    document.getElementById('chkS').addEventListener('change', function(e) {
+      if (sourceS) sourceS.show = e.target.checked;
     });
   </script>
 </body>
 </html>
+
