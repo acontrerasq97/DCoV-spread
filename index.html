@@ -42,40 +42,48 @@
   <div id="cesiumContainer"></div>
 
   <script>
-    // Inicializa o visualizador do Cesium
-    const viewer = new Cesium.Viewer('cesiumContainer', {
-      terrainProvider: Cesium.createWorldTerrain()
-    });
+    async function initCesium() {
+      try {
+        // Inicializa o visualizador do Cesium usando terreno assíncrono (requerido nas versões novas)
+        const viewer = new Cesium.Viewer('cesiumContainer', {
+          terrainProvider: await Cesium.createWorldTerrainAsync()
+        });
 
-    // Variáveis para guardar as fontes de dados
-    let sourceORF1ab, sourceS;
+        // Variáveis para guardar as fontes de dados
+        let sourceORF1ab, sourceS;
 
-    // Carrega o arquivo ORF1ab_spread.kml
-    Cesium.KmlDataSource.load('./ORF1ab_spread.kml', {
-      camera: viewer.camera, canvas: viewer.canvas
-    }).then(function(dataSource) {
-      sourceORF1ab = dataSource;
-      viewer.dataSources.add(sourceORF1ab);
-      // Foca a câmera no primeiro conjunto de dados carregado
-      viewer.zoomTo(sourceORF1ab);
-    }).catch(error => console.error("Erro no KML ORF1ab:", error));
+        // Carrega o arquivo ORF1ab_spread.kml
+        Cesium.KmlDataSource.load('./ORF1ab_spread.kml', {
+          camera: viewer.camera, canvas: viewer.canvas
+        }).then(function(dataSource) {
+          sourceORF1ab = dataSource;
+          viewer.dataSources.add(sourceORF1ab);
+          // Foca a câmera no primeiro conjunto de dados carregado
+          viewer.zoomTo(sourceORF1ab);
+        }).catch(error => console.error("Erro no KML ORF1ab:", error));
 
-    // Carrega o arquivo S_spread.kml
-    Cesium.KmlDataSource.load('./S_spread.kml', {
-      camera: viewer.camera, canvas: viewer.canvas
-    }).then(function(dataSource) {
-      sourceS = dataSource;
-      viewer.dataSources.add(sourceS);
-    }).catch(error => console.error("Erro no KML S:", error));
+        // Carrega o arquivo S_spread.kml
+        Cesium.KmlDataSource.load('./S_spread.kml', {
+          camera: viewer.camera, canvas: viewer.canvas
+        }).then(function(dataSource) {
+          sourceS = dataSource;
+          viewer.dataSources.add(sourceS);
+        }).catch(error => console.error("Erro no KML S:", error));
 
-    // Controle de visibilidade via Checkbox (Interface)
-    document.getElementById('chkORF1ab').addEventListener('change', function(e) {
-      if (sourceORF1ab) sourceORF1ab.show = e.target.checked;
-    });
+        // Controle de visibilidade via Checkbox (Interface)
+        document.getElementById('chkORF1ab').addEventListener('change', function(e) {
+          if (sourceORF1ab) sourceORF1ab.show = e.target.checked;
+        });
 
-    document.getElementById('chkS').addEventListener('change', function(e) {
-      if (sourceS) sourceS.show = e.target.checked;
-    });
+        document.getElementById('chkS').addEventListener('change', function(e) {
+          if (sourceS) sourceS.show = e.target.checked;
+        });
+      } catch (error) {
+        console.error("Erro ao inicializar o Cesium:", error);
+      }
+    }
+
+    initCesium();
   </script>
 </body>
 </html>
